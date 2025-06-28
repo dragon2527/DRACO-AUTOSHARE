@@ -1275,4 +1275,115 @@
         const sideMenu = document.getElementById('side-menu');
         const closeMenu = document.getElementById('close-menu');
         
-        menuIcon.
+        menuIcon.addEventListener('click', function() {
+            sideMenu.classList.add('active');
+        });
+        
+        closeMenu.addEventListener('click', function() {
+            sideMenu.classList.remove('active');
+        });
+        
+        // Contact Admin Modal
+        const contactBtn = document.getElementById('contact-admin');
+        const contactModal = document.getElementById('contact-modal');
+        const closeContactModal = contactModal.querySelector('.close-modal');
+        
+        contactBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            contactModal.classList.add('active');
+            sideMenu.classList.remove('active');
+        });
+        
+        closeContactModal.addEventListener('click', function() {
+            contactModal.classList.remove('active');
+        });
+        
+        // Password protection for history
+        const showHistoryBtn = document.getElementById('show-history');
+        const passwordModal = document.getElementById('password-modal');
+        const submitPasswordBtn = document.getElementById('submit-password');
+        const passwordError = document.getElementById('password-error');
+        const historyContainer = document.getElementById('history-container');
+        const closePasswordModal = passwordModal.querySelector('.close-modal');
+        
+        showHistoryBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            passwordModal.classList.add('active');
+            sideMenu.classList.remove('active');
+            document.getElementById('history-password').value = '';
+            passwordError.style.display = 'none';
+        });
+        
+        closePasswordModal.addEventListener('click', function() {
+            passwordModal.classList.remove('active');
+        });
+        
+        submitPasswordBtn.addEventListener('click', function() {
+            const password = document.getElementById('history-password').value;
+            if (password === 'brysonboost') {
+                passwordModal.classList.remove('active');
+                historyContainer.style.display = 'block';
+                // Scroll to history section
+                historyContainer.scrollIntoView({ behavior: 'smooth' });
+                renderHistory();
+            } else {
+                passwordError.style.display = 'block';
+            }
+        });
+        
+        // Allow pressing Enter in password field
+        document.getElementById('history-password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitPasswordBtn.click();
+            }
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === contactModal) {
+                contactModal.classList.remove('active');
+            }
+            if (e.target === passwordModal) {
+                passwordModal.classList.remove('active');
+            }
+        });
+        
+        // Contact form submission
+        const contactForm = document.querySelector('.contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Message sent successfully! Our admin will contact you soon.');
+                contactModal.classList.remove('active');
+                contactForm.reset();
+            });
+        }
+        
+        // Refresh history button
+        document.getElementById('refresh-history').addEventListener('click', function(e) {
+            e.preventDefault();
+            renderHistory();
+            loadProcessing();
+        });
+        
+        // Clear history button
+        document.getElementById('clear-history').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to clear all history?')) {
+                const userId = localStorage.getItem('userId');
+                let history = JSON.parse(localStorage.getItem('shareHistory')) || [];
+                
+                // Only clear history for current user
+                history = history.filter(item => item.userId !== userId);
+                localStorage.setItem('shareHistory', JSON.stringify(history));
+                
+                renderHistory();
+            }
+        });
+        
+        // Auto-refresh processing every 10 seconds
+        setInterval(loadProcessing, 10000);
+    });
+</script>
+</body>
+</html>
