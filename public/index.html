@@ -1317,4 +1317,45 @@
         });
         
         // Close modals when clicking outside
-        window.
+        window.addEventListener('click', function(e) {
+            if (e.target === contactModal) {
+                contactModal.classList.remove('active');
+            }
+            if (e.target === passwordModal) {
+                passwordModal.classList.remove('active');
+            }
+        });
+        
+        // Contact form submission
+        const contactForm = document.querySelector('.contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Message sent successfully! Our admin will contact you soon.');
+                contactModal.classList.remove('active');
+                contactForm.reset();
+            });
+        }
+        
+        // Refresh history button
+        document.getElementById('refresh-history').addEventListener('click', function(e) {
+            e.preventDefault();
+            renderHistory();
+            loadProcessing();
+        });
+        
+        // Clear history button
+        document.getElementById('clear-history').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to clear all history?')) {
+                localStorage.removeItem('shareHistory');
+                renderHistory();
+            }
+        });
+        
+        // Auto-refresh processing every 10 seconds
+        setInterval(loadProcessing, 10000);
+    });
+</script>
+</body>
+</html>
